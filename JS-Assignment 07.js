@@ -85,9 +85,7 @@ onAuthStateChanged(auth, async (user) => {
 
         setTimeout(() => {
             if (signUpPage) {
-                signUpPage.style.display = 'none'
-                loginPage.style.display = 'none'
-                dashboard.style.display = 'block'
+                window.location.href = '/index.html'
                 dotsContainer.style.display = 'none'
             }
         }, '1000');
@@ -97,8 +95,8 @@ onAuthStateChanged(auth, async (user) => {
         getAllUsers()
         getDataFS()
     } else {
-        signUpPage.style.display = 'block'
         dotsContainer.style.display = 'none'
+        window.location.href = '/login.html'
     }
 
 });
@@ -134,8 +132,9 @@ form1?.addEventListener('submit', (e) => {
                 email: userInfo.email,
                 password: userInfo.password
             })
-
-            profileimglogo.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+            if (profileimglogo) {
+                profileimglogo.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+            }
 
             alert('Signed Up successfully.')
             signUpPage.style.display = 'none'
@@ -167,16 +166,16 @@ form2?.addEventListener('submit', (e) => {
             // update(ref(database, 'users/' + user.uid), {
             //     last_login: dt
             // })
-            profileimglogo.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+            if (profileimglogo) {
+                profileimglogo.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+            }
 
-            signUpPage.style.display = 'none'
-            loginPage.style.display = 'none'
-            dashboard.style.display = 'block'
+            window.location.href = '/index.html'
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            alert('Invalid Email or password.')
+            alert('Invalid Email or password.');
         });
 })
 
@@ -187,10 +186,7 @@ logout?.addEventListener('click', () => {
         signOut(auth).then(() => {
 
             if (!blog) {
-                window.location.href = 'JS-Assignment 07.html'
-                dashboard.style.display = 'none'
-                loginPage.style.display = 'none'
-                signUpPage.style.display = 'block'
+                window.location.href = 'index.html'
             }
 
             dotsContainer.style.display = 'flex'
@@ -208,8 +204,6 @@ logout?.addEventListener('click', () => {
 
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                alert(errorMessage)
-
             });
     }
 })
@@ -329,21 +323,23 @@ userProfileBtn?.addEventListener('click', async () => {
 
         if (newPassword !== repeatPassword) return alert('Passwords must be same!')
 
-        try {
-            let userInfo = {
-                username: profileUserName.value,
-                password: newPassword
-            }
-            await updateDoc(doc(db, "userName", useruid), userInfo)
-            NewPassword.value = ''
-            RepeatPassword.value = ''
-            CurrentPassword.value = ''
-
-            alert('User Profile Updated.')
-        } catch (err) {
-            console.log(err);
+    }
+    try {
+        userProfileBtn.innerHTML = 'loading...';
+        let userInfo = {
+            username: profileUserName.value,
+            password: newPassword
         }
+        await updateDoc(doc(db, "userName", useruid), userInfo)
+        NewPassword.value = ''
+        RepeatPassword.value = ''
+        CurrentPassword.value = ''
 
+        alert('User Profile Updated.')
+    } catch (err) {
+        console.log(err);
+    } finally {
+        userProfileBtn.innerHTML = 'Update Profile';
     }
 })
 
@@ -412,7 +408,7 @@ async function getAllUsers() {
             this.style.backgroundColor = 'rgb(221, 221, 221)'
             anotherUser = this.id
             getChatMsgs()
-            setTimeout(()=>{
+            setTimeout(() => {
                 chatMsgs.scrollTop = chatMsgs.scrollHeight;
             }, '400')
         })
@@ -437,7 +433,7 @@ chatBtn?.addEventListener('click', async () => {
     } catch (err) {
         console.log(err);
     }
-    setTimeout(()=>{
+    setTimeout(() => {
         chatMsgs.scrollTop = chatMsgs.scrollHeight;
     }, '400')
 })
@@ -476,7 +472,7 @@ async function getChatMsgs() {
             })
         }
 
-        setTimeout(()=>{
+        setTimeout(() => {
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
         }, '400')
     })
@@ -495,21 +491,6 @@ const navDiv2 = document.querySelector('.nav-div-2')
 const filterBtn = document.getElementById('filterBtn')
 const myBlog = document.getElementById('myBlog')
 const profile = document.getElementById('profile')
-
-signup?.addEventListener('click', () => {
-    loginPage.style.display = 'none'
-    signUpPage.style.display = 'block'
-})
-
-login?.addEventListener('click', () => {
-    loginPage.style.display = 'block'
-    signUpPage.style.display = 'none'
-})
-
-link?.addEventListener('click', () => {
-    loginPage.style.display = 'block'
-    signUpPage.style.display = 'none'
-})
 
 checkBox1?.addEventListener('change', () => {
     password1.type = checkBox1.checked ? 'text' : 'password'
@@ -556,12 +537,11 @@ filterBtn?.addEventListener('click', () => {
     }
     getDataFS(q)
 
-    console.log(filter);
 })
 
 myBlog?.addEventListener('click', () => {
     if (!blog) {
-        window.location.href = 'JS-Assignment 07.html'
+        window.location.href = '/'
     }
     let myBlogsQ = query(collection(db, "blogs"), where("user", "==", useruid))
     getDataFS(myBlogsQ)

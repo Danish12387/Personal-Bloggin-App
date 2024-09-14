@@ -9,18 +9,6 @@ body {
     background-color: ghostwhite;
 }
 
-#sign-up-page {
-    display: none;
-}
-
-#login-page {
-    display: none;
-}
-
-#dashboard {
-    display: none;
-}
-
 nav {
     background-color: rgba(123, 0, 148);
     display: flex;
@@ -225,8 +213,16 @@ input[type="checkbox"]:focus {
     border: none;
 }
 
+.msg_btn {
+    margin-right: 220px;
+}
+
+.msg_btn img {
+    height: 35px;
+}
+
 .nav-right {
-    width: 450px;
+    width: 200px;
     height: 70px;
     display: flex;
     flex-direction: column;
