@@ -34,7 +34,7 @@ const signUpPage = document.getElementById('sign-up-page')
 const loginPage = document.getElementById('login-page')
 const dashboard = document.getElementById('dashboard')
 const userName = document.getElementById('userName')
-// const dotsContainer = document.querySelector('.dots-container')
+const dotsContainer = document.querySelector('.dots-container');
 const postBlogBtn = document.getElementById('post-blog-btn')
 const blogInput = document.getElementById('blog-input')
 const blogDesc = document.getElementById('textarea')
@@ -88,7 +88,7 @@ onAuthStateChanged(auth, async (user) => {
                 signUpPage.style.display = 'none'
                 loginPage.style.display = 'none'
                 dashboard.style.display = 'block'
-                // dotsContainer.style.display = 'none'
+                dotsContainer.style.display = 'none'
             }
         }, '1000');
         if (chatContainer) {
@@ -98,7 +98,7 @@ onAuthStateChanged(auth, async (user) => {
         getDataFS()
     } else {
         signUpPage.style.display = 'block'
-        // dotsContainer.style.display = 'none'
+        dotsContainer.style.display = 'none'
     }
 
 });
@@ -193,14 +193,14 @@ logout?.addEventListener('click', () => {
                 signUpPage.style.display = 'block'
             }
 
-            // dotsContainer.style.display = 'flex'
+            dotsContainer.style.display = 'flex'
             dashboard.style.display = 'none'
             loginPage.style.display = 'none'
             signUpPage.style.display = 'none'
 
             setTimeout(() => {
                 loginPage.style.display = 'block'
-                // dotsContainer.style.display = 'none'
+                dotsContainer.style.display = 'none'
             }, '2000');
 
         })
@@ -475,7 +475,7 @@ async function getChatMsgs() {
 
             })
         }
-        
+
         setTimeout(()=>{
             chatMsgs.scrollTop = chatMsgs.scrollHeight;
         }, '400')
@@ -568,5 +568,5 @@ myBlog?.addEventListener('click', () => {
 })
 
 profile?.addEventListener('click', () => {
-    window.location.href = 'JS-Assignment 07 Profile.html'
+    window.location.href = 'profile.html'
 })
