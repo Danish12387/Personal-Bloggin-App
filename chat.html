@@ -30,7 +30,12 @@
     <div id="chatContainer">
         <div id="chat_users"></div>
         <div id="chat_msg_box">
-            <div id="chat_msgs"></div>
+            <div id="chat_msgs" class="chat_msgs_initial">
+                <div class="chat_msgs_under_div">
+                    <img src="/images/message-54.png" alt="start messages">
+                    Start Chat Now
+                </div>
+            </div>
             <div class="chat_input_btn_div">
                 <input type="text" name="text" id="chat_input" placeholder="Write a message..." />
                 <button id="chat_btn">
@@ -50,6 +55,14 @@
             </div>
         </div>
     </div>
+
+    <section class="dots-container">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </section>
     <script type="module" src="JS-Assignment 07.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 </body>

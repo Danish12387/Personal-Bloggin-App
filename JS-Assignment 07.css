@@ -286,7 +286,10 @@ input[type="checkbox"]:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    display: none;
+    position: absolute;
+    top: 0;
+    background-color: white;
+    /* display: none; */
     height: 100vh;
     width: 100%;
 }

@@ -34,7 +34,7 @@ const signUpPage = document.getElementById('sign-up-page')
 const loginPage = document.getElementById('login-page')
 const dashboard = document.getElementById('dashboard')
 const userName = document.getElementById('userName')
-const dotsContainer = document.querySelector('.dots-container');
+// const dotsContainer = document.getElementsByClassName('dots-container');
 const postBlogBtn = document.getElementById('post-blog-btn')
 const blogInput = document.getElementById('blog-input')
 const blogDesc = document.getElementById('textarea')
@@ -53,53 +53,77 @@ const chatUsers = document.getElementById('chat_users')
 const chatMsgs = document.getElementById('chat_msgs')
 const chatInput = document.getElementById('chat_input')
 const chatBtn = document.getElementById('chat_btn')
+const chatInputBtnDiv = document.querySelector('.chat_input_btn_div');
 
 let useruid;
 let userNameVar;
+let isLoading = true;
 
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        useruid = user.uid;
-
-        const docRef = doc(db, "userName", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (profileUserName) {
-            profileUserName.value = docSnap.data().username
+const updateLoadingState = () => {
+    const dotsContainer = document.querySelector('.dots-container');
+    if (dotsContainer) {
+        if (isLoading) {
+            dotsContainer.style.display = 'flex';
+        } else {
+            dotsContainer.style.display = 'none';
         }
-
-        if (docSnap.data() && userName) {
-            userName.innerHTML = docSnap.data().username;
-        }
-
-        userNameVar = docSnap.data().username
-
-        if (docSnap.data().profileImage) {
-            if (profileimglogo) {
-                profileimglogo.src = docSnap.data().profileImage
-            }
-            if (UserProfileImg) {
-                UserProfileImg.src = docSnap.data().profileImage
-            }
-        }
-
-        setTimeout(() => {
-            if (signUpPage) {
-                window.location.href = '/index.html'
-                dotsContainer.style.display = 'none'
-            }
-        }, '1000');
-        if (chatContainer) {
-
-        }
-        getAllUsers()
-        getDataFS()
-    } else {
-        dotsContainer.style.display = 'none'
-        window.location.href = '/login.html'
     }
+};
 
-});
+updateLoadingState();
+
+try {
+    onAuthStateChanged(auth, async (user) => {
+
+        if (user) {
+            useruid = user.uid;
+            if (window.location.pathname === "/login.html" || window.location.pathname === "/signup.html") {
+                window.location.href = "/index.html";
+            }
+
+            const docRef = doc(db, "userName", user.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (profileUserName) {
+                profileUserName.value = docSnap.data().username;
+            }
+
+            if (docSnap.data() && userName) {
+                userName.innerHTML = docSnap.data().username;
+            }
+
+            userNameVar = docSnap.data().username;
+
+            if (docSnap.data().profileImage) {
+                if (profileimglogo) {
+                    profileimglogo.src = docSnap.data().profileImage;
+                }
+                if (UserProfileImg) {
+                    UserProfileImg.src = docSnap.data().profileImage;
+                }
+            }
+
+            if (chatContainer) {
+                // Your chatContainer logic here
+            }
+
+            getAllUsers();
+            getDataFS();
+        } else {
+
+            if (window.location.pathname === "/" || window.location.pathname === "/index.html" || window.location.pathname === "/chat.html" || window.location.pathname === "/profile.html") {
+                window.location.href = "/login.html";
+            }
+        }
+    });
+} catch (error) {
+    console.log(error)
+} finally {
+    setTimeout(() => {
+        isLoading = false;
+        updateLoadingState();
+    }, 2000);
+}
 
 form1?.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -400,12 +424,14 @@ async function getAllUsers() {
         }
 
         div.addEventListener('click', function () {
+            chatMsgs.classList.remove('chat_msgs_initial');
+            chatInputBtnDiv.style.display = 'flex';
 
-            const allUsersDiv = document.getElementsByClassName('chat_users_div')
-            for (let i = 0; i < allUsersDiv.length; i++) {
-                allUsersDiv[i].style.backgroundColor = 'white'
-            }
-            this.style.backgroundColor = 'rgb(221, 221, 221)'
+            // const allUsersDiv = document.getElementsByClassName('chat_users_div')
+            // for (let i = 0; i < allUsersDiv.length; i++) {
+            //     allUsersDiv[i].style.backgroundColor = 'white'
+            // }
+            // this.style.backgroundColor = 'rgb(221, 221, 221)'
             anotherUser = this.id
             getChatMsgs()
             setTimeout(() => {
