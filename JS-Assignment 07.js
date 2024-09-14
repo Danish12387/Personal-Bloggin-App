@@ -78,7 +78,7 @@ try {
         if (user) {
             useruid = user.uid;
             if (window.location.pathname === "/login.html" || window.location.pathname === "/signup.html") {
-                window.location.href = "/index.html";
+                window.location.href = "/";
             }
 
             const docRef = doc(db, "userName", user.uid);
@@ -194,7 +194,7 @@ form2?.addEventListener('submit', (e) => {
                 profileimglogo.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
             }
 
-            window.location.href = '/index.html'
+            window.location.href = '/'
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -210,7 +210,7 @@ logout?.addEventListener('click', () => {
         signOut(auth).then(() => {
 
             if (!blog) {
-                window.location.href = 'index.html'
+                window.location.href = ''
             }
 
             dotsContainer.style.display = 'flex'
