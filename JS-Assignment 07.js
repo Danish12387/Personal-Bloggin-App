@@ -84,12 +84,9 @@ try {
                 }
             }
 
-            console.log(user, 'user')
-
             const docRef = doc(db, "userName", user.uid);
             const docSnap = await getDoc(docRef);
 
-            console.log(docSnap?.data())
             if (profileUserName) {
                 profileUserName.value = docSnap?.data()?.username;
             }
@@ -152,7 +149,6 @@ form1?.addEventListener('submit', async (e) => {
             isUserBeingCreated = true;
             const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
             const user = userCredential.user;
-            console.log(user, 'create user');
 
             const userRef = doc(db, "userName", user.uid);
             await setDoc(userRef, {
