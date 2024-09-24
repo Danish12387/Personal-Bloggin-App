@@ -346,7 +346,7 @@ userProfileBtn?.addEventListener('click', async () => {
     const docRef = doc(db, "userName", useruid);
     const docSnap = await getDoc(docRef);
     const UserinfoRef = docSnap.data();
-    
+
     const newPassword = NewPassword.value.trim()
     const repeatPassword = RepeatPassword.value.trim()
     const currentPassword = CurrentPassword.value.trim()
@@ -439,11 +439,11 @@ async function getAllUsers() {
             chatMsgs.classList.remove('chat_msgs_initial');
             chatInputBtnDiv.style.display = 'flex';
 
-            // const allUsersDiv = document.getElementsByClassName('chat_users_div')
-            // for (let i = 0; i < allUsersDiv.length; i++) {
-            //     allUsersDiv[i].style.backgroundColor = 'white'
-            // }
-            // this.style.backgroundColor = 'rgb(221, 221, 221)'
+            const allUsersDiv = document.getElementsByClassName('chat_users_div')
+            for (let i = 0; i < allUsersDiv.length; i++) {
+                allUsersDiv[i].style.backgroundColor = 'white'
+            }
+            this.style.backgroundColor = 'rgb(221, 221, 221)'
             anotherUser = this.id
             getChatMsgs()
             setTimeout(() => {
