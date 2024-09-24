@@ -321,20 +321,22 @@ async function getDataFS(q = query(collection(db, "blogs"))) {
         blogDiv.appendChild(main)
         main.appendChild(title)
         main.appendChild(span)
-        blogDiv.appendChild(button)
         blog?.appendChild(blogDiv)
+        if (FSData.user === useruid) {
+            blogDiv.appendChild(button);
+        }
 
         userNameSpan.innerHTML = FSData.username
+        if (FSData.user === useruid) {
+            button.addEventListener('click', async function () {
 
-        button.addEventListener('click', async function () {
-
-            if (confirm('Do you want to delete!')) {
-                const docRef = doc(db, 'blogs', this.id)
-                await deleteDoc(docRef)
-                getDataFS()
-            }
-        });
-
+                if (confirm('Do you want to delete!')) {
+                    const docRef = doc(db, 'blogs', this.id)
+                    await deleteDoc(docRef)
+                    getDataFS()
+                }
+            });
+        }
     });
 
 }
@@ -343,8 +345,8 @@ userProfileBtn?.addEventListener('click', async () => {
 
     const docRef = doc(db, "userName", useruid);
     const docSnap = await getDoc(docRef);
-    const UserinfoRef = docSnap.data()
-
+    const UserinfoRef = docSnap.data();
+    
     const newPassword = NewPassword.value.trim()
     const repeatPassword = RepeatPassword.value.trim()
     const currentPassword = CurrentPassword.value.trim()
@@ -353,7 +355,7 @@ userProfileBtn?.addEventListener('click', async () => {
 
     if (currentPassword && repeatPassword && newPassword) {
 
-        if (UserinfoRef.password !== currentPassword) return alert('Sahi password dalien.')
+        if (UserinfoRef.password !== currentPassword) return alert('The previous password is wrong!')
 
         if (newPassword !== repeatPassword) return alert('Passwords must be same!')
 
@@ -580,7 +582,7 @@ myBlog?.addEventListener('click', () => {
         window.location.href = '/'
     }
     let myBlogsQ = query(collection(db, "blogs"), where("user", "==", useruid))
-    getDataFS(myBlogsQ)
+    getDataFS(myBlogsQ);
 })
 
 profile?.addEventListener('click', () => {
