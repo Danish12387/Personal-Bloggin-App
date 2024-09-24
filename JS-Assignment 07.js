@@ -58,6 +58,7 @@ const chatInputBtnDiv = document.querySelector('.chat_input_btn_div');
 let useruid;
 let userNameVar;
 let isLoading = true;
+let isUserBeingCreated = false;
 
 const updateLoadingState = () => {
     const dotsContainer = document.querySelector('.dots-container');
@@ -77,24 +78,29 @@ try {
 
         if (user) {
             useruid = user.uid;
-            if (window.location.pathname === "/login.html" || window.location.pathname === "/signup.html") {
-                window.location.href = "/";
+            if (user && !isUserBeingCreated) {
+                if (window.location.pathname === "/login.html" || window.location.pathname === "/signup.html") {
+                    window.location.href = "/";
+                }
             }
+
+            console.log(user, 'user')
 
             const docRef = doc(db, "userName", user.uid);
             const docSnap = await getDoc(docRef);
 
+            console.log(docSnap?.data())
             if (profileUserName) {
-                profileUserName.value = docSnap.data().username;
+                profileUserName.value = docSnap?.data()?.username;
             }
 
             if (docSnap.data() && userName) {
-                userName.innerHTML = docSnap.data().username;
+                userName.innerHTML = docSnap?.data()?.username;
+                userNameVar = docSnap.data().username;
             }
 
-            userNameVar = docSnap.data().username;
 
-            if (docSnap.data().profileImage) {
+            if (docSnap?.data()?.profileImage) {
                 if (profileimglogo) {
                     profileimglogo.src = docSnap.data().profileImage;
                 }
@@ -125,7 +131,7 @@ try {
     }, 2000);
 }
 
-form1?.addEventListener('submit', (e) => {
+form1?.addEventListener('submit', async (e) => {
     e.preventDefault()
 
     let userInfo = {}
@@ -141,37 +147,50 @@ form1?.addEventListener('submit', (e) => {
     else {
         alert("Password must be same.")
     }
-    createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password)
-        .then(async (userCredential) => {
+    const createUser = async (userInfo) => {
+        try {
+            isUserBeingCreated = true;
+            const userCredential = await createUserWithEmailAndPassword(auth, userInfo.email, userInfo.password);
             const user = userCredential.user;
+            console.log(user, 'create user');
 
-            // set(ref(database, 'users/' + user.uid), {
-            //     username: userInfo.name,
-            //     email: userInfo.email
-            // })
-
-            const userRef = doc(db, "userName", user.uid)
+            const userRef = doc(db, "userName", user.uid);
             await setDoc(userRef, {
                 username: userInfo.name,
                 email: userInfo.email,
                 password: userInfo.password
-            })
+            });
+
             if (profileimglogo) {
-                profileimglogo.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+                profileimglogo.src = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
             }
 
-            alert('Signed Up successfully.')
-            signUpPage.style.display = 'none'
-            loginPage.style.display = 'none'
-            dashboard.style.display = 'block'
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            alert(errorMessage)
-        })
-})
+            return {
+                status: "success",
+                message: "Signed Up successfully.",
+                user
+            };
 
+        } catch (error) {
+            isUserBeingCreated = false;
+            return {
+                status: "error",
+                message: error.message
+            };
+        } finally {
+            isUserBeingCreated = false;
+        }
+    };
+
+    const response = await createUser(userInfo);
+    if (response.status === "success") {
+        alert(response.message);
+        window.location.href = "/";
+    } else {
+        alert(response.message);
+    }
+
+});
 
 form2?.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -197,9 +216,8 @@ form2?.addEventListener('submit', (e) => {
             window.location.href = '/'
         })
         .catch((error) => {
-            const errorCode = error.code;
             const errorMessage = error.message;
-            alert('Invalid Email or password.');
+            alert('Invalid Email or password.', errorMessage);
         });
 })
 
@@ -214,12 +232,8 @@ logout?.addEventListener('click', () => {
             }
 
             dotsContainer.style.display = 'flex'
-            dashboard.style.display = 'none'
-            loginPage.style.display = 'none'
-            signUpPage.style.display = 'none'
 
             setTimeout(() => {
-                loginPage.style.display = 'block'
                 dotsContainer.style.display = 'none'
             }, '2000');
 
